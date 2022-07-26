@@ -823,6 +823,12 @@ def _fake_lma_events_from_split_glm_lutevents(split_events, basedate):
     split_events['split_event_mesh_area_fraction'] = np.fabs(
             split_events.split_event_mesh_area_fraction)
 
+    # return an empty array if there's no data, before we try to run a
+    # max() operation on a blank array
+    if split_events.split_event_mesh_x_idx.data.shape[0] == 0:
+        blank_np = np.empty_like([], dtype=lut_split_event_dtype)
+        return blank_np
+
     # In the case of overlapping events (due to a larger than jitter excursion)
     # there will be multiple split events at each target grid cell. This is
     # fine when accumulating, but when we want the minimum value on the target
